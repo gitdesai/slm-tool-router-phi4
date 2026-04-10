@@ -1,0 +1,23 @@
+{"input":"Find free time tomorrow and schedule a meeting","output":{"steps":[{"tool":"calendar.find_free_slots","arguments":{"date":"tomorrow","duration_minutes":30}},{"tool":"calendar.create_event","arguments":{"date":"tomorrow","title":"Meeting"}}]}}
+
+{"input":"Check my meetings today and email the summary to the team","output":{"steps":[{"tool":"calendar.list_events","arguments":{"date":"today"}},{"tool":"gmail.send_email","arguments":{"to":"team","subject":"Today's meetings"}}]}}
+
+{"input":"Create a doc for meeting notes and share it with the team","output":{"steps":[{"tool":"docs.create_doc","arguments":{"title":"Meeting notes"}},{"tool":"drive.share_file","arguments":{"with":"team","permission":"edit"}}]}}
+
+{"input":"Search my inbox for budget emails and read the latest one","output":{"steps":[{"tool":"gmail.search_emails","arguments":{"query":"budget"}},{"tool":"gmail.read_email","arguments":{"latest":true}}]}}
+
+{"input":"List my Drive files from last week and share the report with finance","output":{"steps":[{"tool":"drive.list_files","arguments":{"range":"last week"}},{"tool":"drive.share_file","arguments":{"with":"finance","permission":"view"}}]}}
+
+{"input":"Find a one hour slot next week and book a design review","output":{"steps":[{"tool":"calendar.find_free_slots","arguments":{"range":"next week","duration_minutes":60}},{"tool":"calendar.create_event","arguments":{"title":"Design review","range":"next week"}}]}}
+
+{"input":"Create a project plan document and add a comment asking for review","output":{"steps":[{"tool":"docs.create_doc","arguments":{"title":"Project Plan"}},{"tool":"docs.add_comment","arguments":{"title":"Project Plan","comment":"Please review."}}]}}
+
+{"input":"Search emails from HR and read the most recent message","output":{"steps":[{"tool":"gmail.search_emails","arguments":{"from":"HR"}},{"tool":"gmail.read_email","arguments":{"from":"HR","latest":true}}]}}
+
+{"input":"Upload the meeting notes to Drive and share them with Rajat","output":{"steps":[{"tool":"drive.upload_file","arguments":{"name":"Meeting notes","type":"document"}},{"tool":"drive.share_file","arguments":{"with":"Rajat","permission":"view"}}]}}
+
+{"input":"Check my schedule tomorrow morning and send a reminder email","output":{"steps":[{"tool":"calendar.list_events","arguments":{"date":"tomorrow","time":"morning"}},{"tool":"gmail.send_email","arguments":{"subject":"Schedule reminder"}}]}}
+
+{"input":"Create a weekly status document and share it with the team","output":{"steps":[{"tool":"docs.create_doc","arguments":{"title":"Weekly status update"}},{"tool":"drive.share_file","arguments":{"with":"team","permission":"edit"}}]}}
+
+{"input":"Search for onboarding emails and forward a summary to HR","output":{"steps":[{"tool":"gmail.search_emails","arguments":{"query":"onboarding"}},{"tool":"gmail.send_email","arguments":{"to":"HR","subject":"Onboarding summary"}}]}}

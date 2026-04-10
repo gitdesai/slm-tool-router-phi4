@@ -1,0 +1,20 @@
+{"input":"What meetings do I have tomorrow?","output":{"steps":[{"tool":"calendar.list_events","arguments":{"date":"tomorrow"}}]}}
+{"input":"Show my calendar for next week","output":{"steps":[{"tool":"calendar.list_events","arguments":{"range":"next week"}}]}}
+{"input":"List all events scheduled today","output":{"steps":[{"tool":"calendar.list_events","arguments":{"date":"today"}}]}}
+{"input":"Do I have anything on Friday?","output":{"steps":[{"tool":"calendar.list_events","arguments":{"date":"Friday"}}]}}
+{"input":"Give me my schedule for Monday","output":{"steps":[{"tool":"calendar.list_events","arguments":{"date":"Monday"}}]}}
+{"input":"What’s on my calendar this afternoon?","output":{"steps":[{"tool":"calendar.list_events","arguments":{"date":"today","time":"afternoon"}}]}}
+{"input":"Check my meetings for this week","output":{"steps":[{"tool":"calendar.list_events","arguments":{"range":"this week"}}]}}
+{"input":"Show upcoming calendar events","output":{"steps":[{"tool":"calendar.list_events","arguments":{"range":"upcoming"}}]}}
+{"input":"What events are planned this month?","output":{"steps":[{"tool":"calendar.list_events","arguments":{"range":"this month"}}]}}
+{"input":"Any meetings later today?","output":{"steps":[{"tool":"calendar.list_events","arguments":{"date":"today","time":"later"}}]}}
+
+{"input":"When am I free tomorrow for 30 minutes?","output":{"steps":[{"tool":"calendar.find_free_slots","arguments":{"date":"tomorrow","duration_minutes":30}}]}}
+{"input":"Find a one hour slot next week","output":{"steps":[{"tool":"calendar.find_free_slots","arguments":{"range":"next week","duration_minutes":60}}]}}
+{"input":"Do I have free time on Friday afternoon?","output":{"steps":[{"tool":"calendar.find_free_slots","arguments":{"date":"Friday","time":"afternoon"}}]}}
+{"input":"Check availability for a quick meeting today","output":{"steps":[{"tool":"calendar.find_free_slots","arguments":{"date":"today","duration_minutes":15}}]}}
+{"input":"Look for open slots tomorrow morning","output":{"steps":[{"tool":"calendar.find_free_slots","arguments":{"date":"tomorrow","time":"morning"}}]}}
+
+{"input":"Schedule a meeting tomorrow at 10am","output":{"steps":[{"tool":"calendar.create_event","arguments":{"date":"tomorrow","start_time":"10:00","duration_minutes":30,"title":"Meeting"}}]}}
+{"input":"Block one hour for design review on Friday","output":{"steps":[{"tool":"calendar.create_event","arguments":{"date":"Friday","duration_minutes":60,"title":"Design review"}}]}}
+{"input":"Add a calendar event for team sync","output":{"steps":[{"tool":"calendar.create_event","arguments":{"title":"Team sync"}}]}}
