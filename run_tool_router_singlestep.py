@@ -1,16 +1,3 @@
-
-# ============================================================
-# Single‑Step Tool Router using Phi‑4‑mini‑instruct + QLoRA
-#
-# Purpose:
-#   - Train and evaluate a model to select EXACTLY ONE tool
-#     for a given user request.
-#   - Output format:
-#       {"tool": "<tool_name>", "arguments": {...}}
-#
-# This script is intentionally scoped to SINGLE‑STEP routing.
-# ============================================================
-
 import os, json, yaml, argparse, random, re
 from typing import Any, Dict, List, Tuple, Callable
 
@@ -20,18 +7,7 @@ from transformers import AutoTokenizer, AutoModelForCausalLM, TrainingArguments,
 from peft import LoraConfig, get_peft_model, PeftModel, prepare_model_for_kbit_training
 from trl import SFTTrainer
 
-
-# ------------------------------------------------------------
-# TEMPORARY COMPATIBILITY PATCH
-#
-# Transformers may call:
-#   Accelerator.unwrap_model(..., keep_torch_compile=False)
-# but some Colab Accelerate versions do not support this kwarg.
-#
-# This patch removes the unsupported argument at runtime.
-# Safe for experimentation; remove once dependencies align.
-# ------------------------------------------------------------
-
+# Temporary block
 import accelerate
 import inspect
 
@@ -44,7 +20,7 @@ if "keep_torch_compile" not in inspect.signature(accelerate.Accelerator.unwrap_m
 #
 
 # ----------------------------
-# Reproducibility helpers
+# Repro / Seed
 # ----------------------------
 def set_seed(seed: int):
     random.seed(seed)
@@ -112,10 +88,8 @@ def format_tools_grouped(tools_by_service: Dict[str, List[str]]) -> str:
 
 # ----------------------------
 # Tool name normalization
-# Supports datasets that might contain prefixed names like calendar.list_events -> list_events
-#  
-# Training dataset uses prefixed names, while tools.yaml is unprefixed like list_events
-# Hence normalisation is required
+# Supports datasets that might contain prefixed names like calendar.list_events
+# Your tools.yaml is unprefixed like list_events
 # ----------------------------
 def normalize_tool_name(tool: Any) -> Any:
     if not isinstance(tool, str):
@@ -154,18 +128,21 @@ def stratified_split(
 def key_single(rec: Dict[str, Any]) -> str:
     return normalize_tool_name(rec["output"]["tool"])
 
+def key_multi(rec: Dict[str, Any]) -> str:
+    steps = rec["output"]["steps"]
+    seq = [normalize_tool_name(s["tool"]) for s in steps]
+    return " :: ".join(seq)
 
 # ----------------------------
-# Prompting (single step)
-# Enforces:
-# - exactly one tool
-# - strict JSON
-# - no free text response
+# Prompts
 # ----------------------------
 SINGLE_HINT = """Return ONLY valid JSON:
 {"tool":"<tool_name>","arguments":{...}}
 No extra text. Use {} if arguments are unknown or you are unsure, still return valid JSON with {} as arguments."""
 
+MULTI_HINT = """Return ONLY valid JSON:
+{"steps":[{"tool":"<tool_name>","arguments":{...}}, ...]}
+1 to 3 steps max. No extra text. If you are unsure about arguments for any step, use {}."""
 
 def build_prompt_single(user_input: str, tools_by_service: Dict[str, List[str]]) -> str:
     return f"""You select the correct Google Workspace MCP tool.
@@ -184,13 +161,27 @@ User request: {user_input}
 JSON:
 """
 
+def build_prompt_multi(user_input: str, tools_by_service: Dict[str, List[str]]) -> str:
+    return f"""You plan an ordered multi-step sequence of Google Workspace MCP tool calls.
+
+Available tools (grouped):
+{format_tools_grouped(tools_by_service)}
+
+Rules:
+- Output 1 to 3 steps maximum.
+- Each step tool must be from the list above.
+- Output strict JSON only.
+
+{MULTI_HINT}
+
+User request: {user_input}
+JSON:
+"""
+
 # ----------------------------
-# JSON extraction
-#
-# JSON_RE is assumed to be defined elsewhere.
-# For correctness, JSON_RE should be:
-#   JSON_RE = re.compile(r"\\{.*\\}", re.DOTALL)
+# JSON extraction (robust)
 # ----------------------------
+JSON_RE = re.compile(r"\{.*\}", re.DOTALL)
 
 def extract_json(text: str) -> Dict[str, Any]:
     text = text.strip()
@@ -219,9 +210,6 @@ def generate_json(model, tok, prompt: str, max_new_tokens: int = 256) -> Dict[st
 
 # ----------------------------
 # Model loading (QLoRA)
-# Requires:
-#  - CUDA
-#  - bitsandbytes
 # ----------------------------
 def load_base_model_and_tokenizer(model_id: str):
     tok = AutoTokenizer.from_pretrained(model_id, use_fast=True, trust_remote_code=True)
@@ -301,6 +289,65 @@ def eval_single(records, model, tok, tools_set: set, tools_by_service):
         "details": details,
     }
 
+def eval_multi(records, model, tok, tools_set: set, tools_by_service):
+    total = len(records)
+    ok_json = exact_seq = step_count_ok = first_step_ok = hallucinated = 0
+    details = []
+
+    for r in records:
+        gold_steps = r["output"]["steps"]
+        gold_seq = [normalize_tool_name(s["tool"]) for s in gold_steps]
+
+        prompt = build_prompt_multi(r["input"], tools_by_service)
+        row = {"input": r["input"], "gold": {"steps": [{"tool": t, "arguments": s.get("arguments", {})}
+                                                      for t, s in zip(gold_seq, gold_steps)]},
+               "pred": None, "error": None}
+
+        try:
+            pred = generate_json(model, tok, prompt)
+            steps = pred.get("steps", [])
+            if not isinstance(steps, list):
+                raise ValueError("'steps' must be a list")
+
+            pred_seq = []
+            norm_steps = []
+            for s in steps:
+                if not isinstance(s, dict):
+                    continue
+                t = normalize_tool_name(s.get("tool"))
+                a = s.get("arguments", {}) if isinstance(s.get("arguments", {}), dict) else {}
+                pred_seq.append(t)
+                norm_steps.append({"tool": t, "arguments": a})
+
+            row["pred"] = {"steps": norm_steps}
+            ok_json += 1
+
+            if any((t not in tools_set) for t in pred_seq):
+                hallucinated += 1
+            if len(pred_seq) == len(gold_seq):
+                step_count_ok += 1
+            if pred_seq == gold_seq:
+                exact_seq += 1
+            if pred_seq and gold_seq and pred_seq[0] == gold_seq[0]:
+                first_step_ok += 1
+
+        except Exception as e:
+            row["error"] = str(e)
+
+        details.append(row)
+
+    return {
+        "summary": {
+            "total": total,
+            "json_valid_rate": ok_json / max(1, total),
+            "hallucinated_tool_rate": hallucinated / max(1, total),
+            "step_count_accuracy": step_count_ok / max(1, total),
+            "sequence_exact_match": exact_seq / max(1, total),
+            "first_step_accuracy": first_step_ok / max(1, total),
+        },
+        "details": details,
+    }
+
 # ----------------------------
 # Fine-tuning (SFT + LoRA/QLoRA)
 # ----------------------------
@@ -312,6 +359,14 @@ def sft_text_single(rec, tools_by_service):
     )
     return prompt + target
 
+def sft_text_multi(rec, tools_by_service):
+    prompt = build_prompt_multi(rec["input"], tools_by_service)
+    target = json.dumps(
+        {"steps": [{"tool": normalize_tool_name(s["tool"]), "arguments": s.get("arguments", {})}
+                   for s in rec["output"]["steps"]]},
+        ensure_ascii=False
+    )
+    return prompt + target
 
 def finetune(train_records, model_id, tools_by_service, out_dir, epochs=2, seed=42, multistep=False):
     set_seed(seed)
@@ -373,13 +428,14 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--tools_yaml", default="tools.yaml")
     ap.add_argument("--single_jsonl", default="tool_routing_synthetic.jsonl")
+    ap.add_argument("--multi_jsonl", default="tool_routing_multistep.jsonl")
     ap.add_argument("--model_id", default="microsoft/Phi-4-mini-instruct")
     ap.add_argument("--out_dir", default="runs")
     ap.add_argument("--seed", type=int, default=42)
     ap.add_argument("--test_ratio", type=float, default=0.2)
     ap.add_argument("--epochs", type=int, default=2)
     ap.add_argument("--do_train", action="store_true")
-    ap.add_argument("--do_baseline", action="store_true")
+    ap.add_argument("--do_multi", action="store_true")
     args = ap.parse_args()
 
     set_seed(args.seed)
@@ -390,6 +446,8 @@ def main():
         raise FileNotFoundError(f"Missing {args.tools_yaml}")
     if not os.path.exists(args.single_jsonl):
         raise FileNotFoundError(f"Missing {args.single_jsonl}")
+    if args.do_multi and not os.path.exists(args.multi_jsonl):
+        raise FileNotFoundError(f"Missing {args.multi_jsonl}")
 
     tools_by_service, tools_flat = load_tools_yaml(args.tools_yaml)
     tools_set = set(tools_flat)
@@ -407,7 +465,7 @@ def main():
     write_jsonl(os.path.join(split_dir, "test_single.jsonl"), test_s)
     print(f"[SPLIT single] train={len(train_s)} test={len(test_s)}")
 
-    if args.do_baseline:
+    if 1:
       base, tok = load_base_model_and_tokenizer(args.model_id)
       baseline_single = eval_single(test_s, base, tok, tools_set, tools_by_service)
       with open(os.path.join(report_dir, "baseline_single_summary.json"), "w", encoding="utf-8") as f:
@@ -426,6 +484,33 @@ def main():
             json.dump(post_single["summary"], f, indent=2)
         write_jsonl(os.path.join(report_dir, "post_single_details.jsonl"), post_single["details"])
         print("[POST single]", json.dumps(post_single["summary"], indent=2))
+
+    base, tok = load_base_model_and_tokenizer(args.model_id)
+    # -------- Phase 2: multi (optional) --------
+    if args.do_multi:
+        multi = read_jsonl(args.multi_jsonl)
+        train_m, test_m = stratified_split(multi, key_fn=key_multi, test_ratio=args.test_ratio, seed=args.seed)
+        write_jsonl(os.path.join(split_dir, "train_multi.jsonl"), train_m)
+        write_jsonl(os.path.join(split_dir, "test_multi.jsonl"), test_m)
+        print(f"[SPLIT multi] train={len(train_m)} test={len(test_m)}")
+
+        baseline_multi = eval_multi(test_m, base, tok, tools_set, tools_by_service)
+        with open(os.path.join(report_dir, "baseline_multi_summary.json"), "w", encoding="utf-8") as f:
+            json.dump(baseline_multi["summary"], f, indent=2)
+        write_jsonl(os.path.join(report_dir, "baseline_multi_details.jsonl"), baseline_multi["details"])
+        print("[BASELINE multi]", json.dumps(baseline_multi["summary"], indent=2))
+
+        if args.do_train:
+            adapter_multi = os.path.join(args.out_dir, "adapter_multi")
+            print("[TRAIN] multi-step...")
+            finetune(train_m, args.model_id, tools_by_service, adapter_multi, epochs=max(1, args.epochs), seed=args.seed, multistep=True)
+
+            tuned2, tok3 = load_with_adapter(args.model_id, adapter_multi)
+            post_multi = eval_multi(test_m, tuned2, tok3, tools_set, tools_by_service)
+            with open(os.path.join(report_dir, "post_multi_summary.json"), "w", encoding="utf-8") as f:
+                json.dump(post_multi["summary"], f, indent=2)
+            write_jsonl(os.path.join(report_dir, "post_multi_details.jsonl"), post_multi["details"])
+            print("[POST multi]", json.dumps(post_multi["summary"], indent=2))
 
     print("[DONE] Outputs in:", args.out_dir)
 
