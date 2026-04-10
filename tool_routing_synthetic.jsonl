@@ -1,0 +1,120 @@
+{"input": "What meetings do I have tomorrow?", "output": {"tool": "calendar.list_events", "arguments": {"date": "tomorrow"}}}
+{"input": "Show my calendar for next week", "output": {"tool": "calendar.list_events", "arguments": {"range": "next week"}}}
+{"input": "List all events scheduled today", "output": {"tool": "calendar.list_events", "arguments": {"date": "today"}}}
+{"input": "Do I have anything on Friday?", "output": {"tool": "calendar.list_events", "arguments": {"date": "Friday"}}}
+{"input": "Give me my schedule for Monday", "output": {"tool": "calendar.list_events", "arguments": {"date": "Monday"}}}
+{"input": "What’s on my calendar this afternoon?", "output": {"tool": "calendar.list_events", "arguments": {"date": "today", "time": "afternoon"}}}
+{"input": "Check my meetings for this week", "output": {"tool": "calendar.list_events", "arguments": {"range": "this week"}}}
+{"input": "Show upcoming calendar events", "output": {"tool": "calendar.list_events", "arguments": {"range": "upcoming"}}}
+{"input": "What events are planned this month?", "output": {"tool": "calendar.list_events", "arguments": {"range": "this month"}}}
+{"input": "Any meetings later today?", "output": {"tool": "calendar.list_events", "arguments": {"date": "today", "time": "later"}}}
+{"input": "When am I free tomorrow for 30 minutes?", "output": {"tool": "calendar.find_free_slots", "arguments": {"date": "tomorrow", "duration_minutes": 30}}}
+{"input": "Find a one hour slot next week", "output": {"tool": "calendar.find_free_slots", "arguments": {"range": "next week", "duration_minutes": 60}}}
+{"input": "Do I have free time on Friday afternoon?", "output": {"tool": "calendar.find_free_slots", "arguments": {"date": "Friday", "time": "afternoon"}}}
+{"input": "Check availability for a quick meeting today", "output": {"tool": "calendar.find_free_slots", "arguments": {"date": "today", "duration_minutes": 15}}}
+{"input": "Look for open slots tomorrow morning", "output": {"tool": "calendar.find_free_slots", "arguments": {"date": "tomorrow", "time": "morning"}}}
+{"input": "When can I fit a 45 minute call this week?", "output": {"tool": "calendar.find_free_slots", "arguments": {"range": "this week", "duration_minutes": 45}}}
+{"input": "Find availability on Monday", "output": {"tool": "calendar.find_free_slots", "arguments": {"date": "Monday"}}}
+{"input": "Any free slots today?", "output": {"tool": "calendar.find_free_slots", "arguments": {"date": "today"}}}
+{"input": "Can I schedule something tomorrow afternoon?", "output": {"tool": "calendar.find_free_slots", "arguments": {"date": "tomorrow", "time": "afternoon"}}}
+{"input": "Find me some time on Thursday", "output": {"tool": "calendar.find_free_slots", "arguments": {"date": "Thursday"}}}
+{"input": "Schedule a meeting tomorrow at 10am", "output": {"tool": "calendar.create_event", "arguments": {"date": "tomorrow", "start_time": "10:00", "duration_minutes": 30, "title": "Meeting"}}}
+{"input": "Block one hour for design review on Friday", "output": {"tool": "calendar.create_event", "arguments": {"date": "Friday", "duration_minutes": 60, "title": "Design review"}}}
+{"input": "Add a calendar event for team sync", "output": {"tool": "calendar.create_event", "arguments": {"title": "Team sync"}}}
+{"input": "Create a meeting this afternoon", "output": {"tool": "calendar.create_event", "arguments": {"date": "today", "time": "afternoon", "title": "Meeting"}}}
+{"input": "Put a reminder on my calendar for Monday", "output": {"tool": "calendar.create_event", "arguments": {"date": "Monday", "title": "Reminder"}}}
+{"input": "Schedule lunch tomorrow", "output": {"tool": "calendar.create_event", "arguments": {"date": "tomorrow", "title": "Lunch"}}}
+{"input": "Add event for project kickoff next week", "output": {"tool": "calendar.create_event", "arguments": {"range": "next week", "title": "Project kickoff"}}}
+{"input": "Create a calendar entry at 3pm today", "output": {"tool": "calendar.create_event", "arguments": {"date": "today", "start_time": "15:00", "duration_minutes": 30, "title": "Calendar entry"}}}
+{"input": "Book time for a client call", "output": {"tool": "calendar.create_event", "arguments": {"title": "Client call"}}}
+{"input": "Schedule a meeting on Thursday morning", "output": {"tool": "calendar.create_event", "arguments": {"date": "Thursday", "time": "morning", "title": "Meeting"}}}
+{"input": "Find emails from John", "output": {"tool": "gmail.search_emails", "arguments": {"from": "John"}}}
+{"input": "Search my inbox for invoices", "output": {"tool": "gmail.search_emails", "arguments": {"query": "invoice"}}}
+{"input": "Look for emails about the project", "output": {"tool": "gmail.search_emails", "arguments": {"query": "project"}}}
+{"input": "Do I have any unread emails?", "output": {"tool": "gmail.search_emails", "arguments": {"status": "unread"}}}
+{"input": "Search emails from last week", "output": {"tool": "gmail.search_emails", "arguments": {"range": "last week"}}}
+{"input": "Find messages containing meeting notes", "output": {"tool": "gmail.search_emails", "arguments": {"query": "meeting notes"}}}
+{"input": "Show me emails from HR", "output": {"tool": "gmail.search_emails", "arguments": {"from": "HR"}}}
+{"input": "Search emails with subject budget", "output": {"tool": "gmail.search_emails", "arguments": {"subject": "budget"}}}
+{"input": "Check emails from finance team", "output": {"tool": "gmail.search_emails", "arguments": {"from": "finance"}}}
+{"input": "Look up old emails about onboarding", "output": {"tool": "gmail.search_emails", "arguments": {"query": "onboarding"}}}
+{"input": "Open the latest email from John", "output": {"tool": "gmail.read_email", "arguments": {"from": "John", "latest": true}}}
+{"input": "Read the most recent unread email", "output": {"tool": "gmail.read_email", "arguments": {"status": "unread", "latest": true}}}
+{"input": "Open the email about project update", "output": {"tool": "gmail.read_email", "arguments": {"subject": "project update"}}}
+{"input": "Read the last message I received", "output": {"tool": "gmail.read_email", "arguments": {"latest": true}}}
+{"input": "Show me the email from HR I just got", "output": {"tool": "gmail.read_email", "arguments": {"from": "HR", "latest": true}}}
+{"input": "Read that budget email", "output": {"tool": "gmail.read_email", "arguments": {"subject": "budget"}}}
+{"input": "Open the onboarding email", "output": {"tool": "gmail.read_email", "arguments": {"query": "onboarding"}}}
+{"input": "Read the finance email", "output": {"tool": "gmail.read_email", "arguments": {"from": "finance"}}}
+{"input": "Open the email from yesterday", "output": {"tool": "gmail.read_email", "arguments": {"date": "yesterday"}}}
+{"input": "Read the last unread message", "output": {"tool": "gmail.read_email", "arguments": {"status": "unread"}}}
+{"input": "Send an email to John", "output": {"tool": "gmail.send_email", "arguments": {"to": "John"}}}
+{"input": "Email the team about the meeting", "output": {"tool": "gmail.send_email", "arguments": {"to": "team", "subject": "Meeting"}}}
+{"input": "Send a follow up message", "output": {"tool": "gmail.send_email", "arguments": {"subject": "Follow up"}}}
+{"input": "Compose an email to HR", "output": {"tool": "gmail.send_email", "arguments": {"to": "HR"}}}
+{"input": "Send project update via email", "output": {"tool": "gmail.send_email", "arguments": {"subject": "Project update"}}}
+{"input": "Email finance team about budget", "output": {"tool": "gmail.send_email", "arguments": {"to": "finance", "subject": "Budget"}}}
+{"input": "Write an email to the client", "output": {"tool": "gmail.send_email", "arguments": {"to": "client"}}}
+{"input": "Send a reminder email", "output": {"tool": "gmail.send_email", "arguments": {"subject": "Reminder"}}}
+{"input": "Notify the team by email", "output": {"tool": "gmail.send_email", "arguments": {"to": "team"}}}
+{"input": "Send thank you email", "output": {"tool": "gmail.send_email", "arguments": {"subject": "Thank you"}}}
+{"input": "List files in my Drive", "output": {"tool": "drive.list_files", "arguments": {}}}
+{"input": "Show my recent files", "output": {"tool": "drive.list_files", "arguments": {"recent": true}}}
+{"input": "List documents in Drive", "output": {"tool": "drive.list_files", "arguments": {"type": "document"}}}
+{"input": "What files were updated today?", "output": {"tool": "drive.list_files", "arguments": {"date": "today"}}}
+{"input": "Show Drive files from last week", "output": {"tool": "drive.list_files", "arguments": {"range": "last week"}}}
+{"input": "List shared files", "output": {"tool": "drive.list_files", "arguments": {"shared": true}}}
+{"input": "Show files in my folder", "output": {"tool": "drive.list_files", "arguments": {"location": "folder"}}}
+{"input": "List spreadsheets in Drive", "output": {"tool": "drive.list_files", "arguments": {"type": "spreadsheet"}}}
+{"input": "Show my uploaded files", "output": {"tool": "drive.list_files", "arguments": {"owner": "me"}}}
+{"input": "Find files in Drive", "output": {"tool": "drive.list_files", "arguments": {}}}
+{"input": "Upload a file to Drive", "output": {"tool": "drive.upload_file", "arguments": {}}}
+{"input": "Add this document to Drive", "output": {"tool": "drive.upload_file", "arguments": {"type": "document"}}}
+{"input": "Upload the report to Drive", "output": {"tool": "drive.upload_file", "arguments": {"name": "report"}}}
+{"input": "Save this file to Drive", "output": {"tool": "drive.upload_file", "arguments": {}}}
+{"input": "Upload presentation to Drive", "output": {"tool": "drive.upload_file", "arguments": {"type": "presentation"}}}
+{"input": "Put the file in Drive", "output": {"tool": "drive.upload_file", "arguments": {}}}
+{"input": "Upload the spreadsheet", "output": {"tool": "drive.upload_file", "arguments": {"type": "spreadsheet"}}}
+{"input": "Upload the meeting notes document", "output": {"tool": "drive.upload_file", "arguments": {"name": "meeting notes", "type": "document"}}}
+{"input": "Add the PDF to Drive", "output": {"tool": "drive.upload_file", "arguments": {"type": "pdf"}}}
+{"input": "Upload a new version of the deck", "output": {"tool": "drive.upload_file", "arguments": {"type": "presentation"}}}
+{"input": "Share the report with the team", "output": {"tool": "drive.share_file", "arguments": {"file": "report", "with": "team"}}}
+{"input": "Give John access to the spreadsheet", "output": {"tool": "drive.share_file", "arguments": {"with": "John", "type": "spreadsheet"}}}
+{"input": "Share this folder with HR", "output": {"tool": "drive.share_file", "arguments": {"type": "folder", "with": "HR"}}}
+{"input": "Make the document viewable by finance", "output": {"tool": "drive.share_file", "arguments": {"with": "finance", "permission": "view"}}}
+{"input": "Share the presentation with the client", "output": {"tool": "drive.share_file", "arguments": {"type": "presentation", "with": "client"}}}
+{"input": "Grant edit access to the team", "output": {"tool": "drive.share_file", "arguments": {"with": "team", "permission": "edit"}}}
+{"input": "Share my meeting notes with Rajat", "output": {"tool": "drive.share_file", "arguments": {"file": "meeting notes", "with": "Rajat"}}}
+{"input": "Give read access to Aman", "output": {"tool": "drive.share_file", "arguments": {"with": "Aman", "permission": "view"}}}
+{"input": "Share this file publicly", "output": {"tool": "drive.share_file", "arguments": {"permission": "public"}}}
+{"input": "Share the latest doc with Gauri", "output": {"tool": "drive.share_file", "arguments": {"with": "Gauri"}}}
+{"input": "Create a new doc for meeting notes", "output": {"tool": "docs.create_doc", "arguments": {"title": "Meeting notes"}}}
+{"input": "Start a document called Project Plan", "output": {"tool": "docs.create_doc", "arguments": {"title": "Project Plan"}}}
+{"input": "Create a doc for weekly status update", "output": {"tool": "docs.create_doc", "arguments": {"title": "Weekly status update"}}}
+{"input": "Make a new document for client brief", "output": {"tool": "docs.create_doc", "arguments": {"title": "Client brief"}}}
+{"input": "Create a document named Requirements", "output": {"tool": "docs.create_doc", "arguments": {"title": "Requirements"}}}
+{"input": "Start a new doc for design review", "output": {"tool": "docs.create_doc", "arguments": {"title": "Design review"}}}
+{"input": "Create a doc titled Action Items", "output": {"tool": "docs.create_doc", "arguments": {"title": "Action Items"}}}
+{"input": "Open a new document for notes", "output": {"tool": "docs.create_doc", "arguments": {"title": "Notes"}}}
+{"input": "Create a document for Q2 planning", "output": {"tool": "docs.create_doc", "arguments": {"title": "Q2 planning"}}}
+{"input": "Create a Google Doc called Architecture", "output": {"tool": "docs.create_doc", "arguments": {"title": "Architecture"}}}
+{"input": "Update the Project Plan doc with latest changes", "output": {"tool": "docs.update_doc", "arguments": {"title": "Project Plan", "action": "update"}}}
+{"input": "Add a new section to the meeting notes doc", "output": {"tool": "docs.update_doc", "arguments": {"title": "Meeting notes", "action": "append_section"}}}
+{"input": "Insert the agenda into the client brief", "output": {"tool": "docs.update_doc", "arguments": {"title": "Client brief", "action": "insert", "content": "agenda"}}}
+{"input": "Append action items to the Notes document", "output": {"tool": "docs.update_doc", "arguments": {"title": "Notes", "action": "append", "content": "action items"}}}
+{"input": "Update the Requirements doc", "output": {"tool": "docs.update_doc", "arguments": {"title": "Requirements", "action": "update"}}}
+{"input": "Add summary to weekly status update", "output": {"tool": "docs.update_doc", "arguments": {"title": "Weekly status update", "action": "append", "content": "summary"}}}
+{"input": "Edit the Architecture doc", "output": {"tool": "docs.update_doc", "arguments": {"title": "Architecture", "action": "update"}}}
+{"input": "Replace the intro in Project Plan", "output": {"tool": "docs.update_doc", "arguments": {"title": "Project Plan", "action": "replace", "target": "intro"}}}
+{"input": "Add bullet points to Action Items doc", "output": {"tool": "docs.update_doc", "arguments": {"title": "Action Items", "action": "append", "content": "bullets"}}}
+{"input": "Update Q2 planning document with timeline", "output": {"tool": "docs.update_doc", "arguments": {"title": "Q2 planning", "action": "append", "content": "timeline"}}}
+{"input": "Add a comment to the Project Plan doc", "output": {"tool": "docs.add_comment", "arguments": {"title": "Project Plan", "comment": "Please review this section."}}}
+{"input": "Comment on the meeting notes", "output": {"tool": "docs.add_comment", "arguments": {"title": "Meeting notes", "comment": "Capture decisions clearly."}}}
+{"input": "Leave a note on the client brief", "output": {"tool": "docs.add_comment", "arguments": {"title": "Client brief", "comment": "Confirm dates with client."}}}
+{"input": "Add feedback comment to Requirements", "output": {"tool": "docs.add_comment", "arguments": {"title": "Requirements", "comment": "Clarify acceptance criteria."}}}
+{"input": "Add a comment on Architecture doc", "output": {"tool": "docs.add_comment", "arguments": {"title": "Architecture", "comment": "Consider security implications."}}}
+{"input": "Comment on weekly status update", "output": {"tool": "docs.add_comment", "arguments": {"title": "Weekly status update", "comment": "Add risks section."}}}
+{"input": "Add comment to Q2 planning", "output": {"tool": "docs.add_comment", "arguments": {"title": "Q2 planning", "comment": "Check dependencies."}}}
+{"input": "Leave a comment on Action Items", "output": {"tool": "docs.add_comment", "arguments": {"title": "Action Items", "comment": "Assign owners."}}}
+{"input": "Add a note to Notes document", "output": {"tool": "docs.add_comment", "arguments": {"title": "Notes", "comment": "Summarize next steps."}}}
+{"input": "Comment on design review doc", "output": {"tool": "docs.add_comment", "arguments": {"title": "Design review", "comment": "Need decision by Friday."}}}

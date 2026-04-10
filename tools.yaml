@@ -1,0 +1,24 @@
+calendar:
+  - list_events
+  - find_free_slots
+  - create_event
+  - update_event
+  - delete_event
+
+gmail:
+  - search_emails
+  - read_email
+  - send_email
+  - draft_email
+  - modify_labels
+
+drive:
+  - list_files
+  - get_file
+  - upload_file
+  - share_file
+
+docs:
+  - create_doc
+  - update_doc
+  - add_comment

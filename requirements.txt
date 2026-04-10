@@ -1,0 +1,8 @@
+torch
+transformers==4.53.3
+accelerate>=0.29.3
+trl==0.9.6
+peft==0.13.2
+bitsandbytes>=0.43.1
+datasets>=2.18.0
+pyyaml

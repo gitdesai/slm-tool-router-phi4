@@ -1,0 +1,19 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "MCP Tool Invocation Output",
+  "description": "Structured output emitted by the model to select and invoke a Google Workspace MCP tool.",
+  "type": "object",
+  "required": ["tool", "arguments"],
+  "additionalProperties": false,
+  "properties": {
+    "tool": {
+      "type": "string",
+      "description": "Exact MCP tool name as defined in tools.yaml and exposed by the Google Workspace MCP server."
+    },
+    "arguments": {
+      "type": "object",
+      "description": "Tool-specific arguments. Must conform to the selected tool's parameter schema.",
+      "additionalProperties": true
+    }
+  }
+}
